@@ -1,0 +1,29 @@
+# Core
+fastapi
+uvicorn
+python-dotenv
+
+# Database
+sqlalchemy
+psycopg2-binary
+
+# Vector Database
+pinecone
+
+# AI/LLM
+groq
+langgraph
+langchain
+langchain-groq
+
+# Validation
+pydantic
+email-validator
+
+# Utilities
+httpx
+opik
+
+# Google OAuth/API
+google-auth-oauthlib
+google-api-python-client

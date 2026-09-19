@@ -68,7 +68,7 @@ export default function ChatInterface() {
         }
 
         // If missing params, derive and redirect
-        const storedEmail = localStorage.getItem('user_email');
+        const storedEmail = sessionStorage.getItem('user_email');
         const queryEmail = searchParams.get('email');
         const effectiveEmail = routeEmail || queryEmail || storedEmail;
 
@@ -107,7 +107,7 @@ export default function ChatInterface() {
         const PORT = import.meta.env.REACT_APP_BACKEND_PORT || '8000';
 
         // Use params or fallback
-        const effectiveEmail = routeEmail || localStorage.getItem('user_email');
+        const effectiveEmail = routeEmail || sessionStorage.getItem('user_email');
 
         const userMsg = { text: input, sender: 'user', id: Date.now() };
         // Optimistic update

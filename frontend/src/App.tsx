@@ -21,7 +21,7 @@ function AppRoutes() {
 
   // Check if user has logged health today (only on signed-in pages, not on home)
   useEffect(() => {
-    const isSignedIn = localStorage.getItem('signedIn') === 'true';
+    const isSignedIn = sessionStorage.getItem('signedIn') === 'true';
     const isHomePage = location.pathname === '/';
     const isWellnessPage = location.pathname === '/wellness';
 

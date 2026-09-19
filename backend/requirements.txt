@@ -23,6 +23,7 @@ email-validator
 # Utilities
 httpx
 opik
+PyJWT>=2.8.0
 
 # Google OAuth/API
 google-auth-oauthlib

@@ -1,3 +1,5 @@
+import { getAuthHeaders } from '../utils/authUtils';
+
 // chat api - supports multiple agents
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -21,7 +23,7 @@ export async function sendChatMessage(
 
     const res = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ message, email, thread_id: threadId })
     });
 
@@ -41,7 +43,7 @@ export async function saveThread(
 ): Promise<any> {
     const res = await fetch(`${API_URL}/api/history/${email}/${threadId}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
             messages,
             title
@@ -49,7 +51,14 @@ export async function saveThread(
     });
 
     if (!res.ok) {
-        console.error('Failed to save thread');
+        let detail = '';
+        try {
+            detail = await res.text();
+        } catch {
+            // ignore body read errors
+        }
+        const suffix = detail ? `: ${detail}` : '';
+        throw new Error(`Failed to save thread (status ${res.status})${suffix}`);
     }
     return res.json();
 }
@@ -59,9 +68,29 @@ export async function getThread(
     threadId: string,
     _port: string = '8000'
 ): Promise<any> {
-    const res = await fetch(`${API_URL}/api/history/${email}/${threadId}`);
+    const res = await fetch(`${API_URL}/api/history/${email}/${threadId}`, {
+        headers: getAuthHeaders(),
+    });
+
     if (!res.ok) {
-        throw new Error('Thread not found');
+        let detail = '';
+        try {
+            detail = await res.text();
+        } catch {
+            // ignore body read errors
+        }
+
+        const suffix = detail ? `: ${detail}` : '';
+
+        if (res.status === 401 || res.status === 403) {
+            throw new Error(`Unauthorized access to thread (status ${res.status})${suffix}`);
+        }
+
+        if (res.status === 404) {
+            throw new Error(`Thread not found (status 404)${suffix}`);
+        }
+
+        throw new Error(`Failed to fetch thread (status ${res.status})${suffix}`);
     }
     return res.json();
 }
